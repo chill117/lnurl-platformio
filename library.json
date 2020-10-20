@@ -1,0 +1,24 @@
+{
+  "name": "lnurl",
+  "version": "0.0.0",
+  "description": "lnurl library for platformio",
+  "keywords": "lnurl, bitcoin, lightning network",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chill117/lnurl-platformio.git"
+  },
+  "authors": [
+    {
+      "name": "Charles Hill",
+      "email": "chill@degreesofzero.com",
+      "url": "https://degreesofzero.com",
+      "maintainer": true
+    }
+  ],
+  "license": "GPL-3.0",
+  "homepage": "https://github.com/chill117/lnurl-platformio",
+  "dependencies": {
+  },
+  "frameworks": "*",
+  "platforms": "*"
+}
