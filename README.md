@@ -3,6 +3,8 @@
 Implementation of [lnurl](https://github.com/btcontract/lnurl-rfc) for [PlatformIO](https://platformio.org/).
 
 * [Installation](#installation)
+* [Usage](#usage)
+* [Tests](#tests)
 * [Changelog](#changelog)
 * [License](#license)
 
@@ -11,9 +13,26 @@ Implementation of [lnurl](https://github.com/btcontract/lnurl-rfc) for [Platform
 
 To add the lnurl library to your project:
 ```bash
-platformio lib install --save lnurl
+platformio lib install --save chill1/lnurl
 ```
 The `--save` flag tells platformio to add the library to your project's `platformio.ini` file.
+
+
+## Usage
+
+See the [test](https://github.com/samotari/bleskomat/tree/master/test) directory for example usage.
+
+
+## Tests
+
+To run the automated tests:
+```bash
+platformio test \
+	--environment esp32dev \
+	--upload-port /dev/ttyUSB0 \
+	--test-port /dev/ttyUSB0
+```
+It is necessary to connect a hardware via USB.
 
 
 ## Changelog
