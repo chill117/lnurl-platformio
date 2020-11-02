@@ -13,9 +13,8 @@ Implementation of [lnurl](https://github.com/btcontract/lnurl-rfc) for [Platform
 
 To add the lnurl library to your project:
 ```bash
-platformio lib install --save chill1/lnurl
+platformio lib install chill1/lnurl
 ```
-The `--save` flag tells platformio to add the library to your project's `platformio.ini` file.
 
 
 ## Usage
