@@ -19,7 +19,7 @@ platformio lib install chill1/lnurl
 
 ## Usage
 
-See the [test](https://github.com/samotari/bleskomat/tree/master/test) directory for example usage.
+See the [test](https://github.com/chill117/lnurl-platformio/tree/master/test) directory for example usage.
 
 
 ## Tests
