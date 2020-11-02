@@ -2,11 +2,25 @@
 
 Implementation of [lnurl](https://github.com/btcontract/lnurl-rfc) in C++ for [PlatformIO](https://platformio.org/).
 
+* [Overview](#overview)
 * [Installation](#installation)
 * [Usage](#usage)
 * [Tests](#tests)
 * [Changelog](#changelog)
 * [License](#license)
+
+
+## Overview
+
+What you can do with this library:
+* Encode and decode lnurl strings
+* Create signed URLs to be used with an lnurl server that supports offline signing - e.g [lnurl-node](https://github.com/chill117/lnurl-node).
+
+Current state of lnurl subprotocol implementation:
+* [x] lnurl-withdraw
+* [ ] lnurl-pay
+* [ ] lnurl-channel
+* [ ] lnurl-auth
 
 
 ## Installation
