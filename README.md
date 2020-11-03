@@ -91,7 +91,7 @@ const std::string output = signer.create_url(params, nonce);
 std::cout << output << std::endl;
 ```
 
-See the [test](https://github.com/chill117/lnurl-platformio/tree/master/test) directory for more example usage.
+See the [test](https://github.com/chill117/lnurl-platformio/tree/master/test) or [examples](https://github.com/chill117/lnurl-platformio/tree/master/examples) directories for more example usage.
 
 
 ## Tests
