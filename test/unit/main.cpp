@@ -15,6 +15,12 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+// ---------------------------------------------------
+// ---       AUTO-GENERATED // DO NOT MODIFY       ---
+// ---------------------------------------------------
+// ---        See ./test/templates/main.cpp        ---
+// ---------------------------------------------------
+
 #include "lnurl.h"
 
 #include <unity.h>
@@ -142,15 +148,16 @@ void test_signer_create_url_withdraw_msat(void) {
 	config.apiKey.key = "ef9901bebc801518e7d862c2edaedd3acd86ec132fb3bd5ac0013c9a5ba478db";
 	config.apiKey.encoding = "hex";
 	config.callbackUrl = "https://localhost:3000/lnurl";
+	config.fiatCurrency = "";
 	config.shorten = false;
 	LnurlSigner signer(config);
 	const std::string nonce = "test_withdraw_msat";
 	LnurlWithdrawParamsMSat params;
-	params.minWithdrawable = 50000;
+	params.minWithdrawable = 40000;
 	params.maxWithdrawable = 60000;
 	params.defaultDescription = "";
 	const std::string result = signer.create_url(params, nonce);
-	const std::string expected = "https://localhost:3000/lnurl?id=5d4aeb462a&tag=withdrawRequest&nonce=test_withdraw_msat&minWithdrawable=50000&maxWithdrawable=60000&defaultDescription=&signature=bc84dea0d79193208cbcb3a8cf848620016306d4bd01254ef2c6d6bd75e83ab7";
+	const std::string expected = "https://localhost:3000/lnurl?defaultDescription=&id=5d4aeb462a&maxWithdrawable=60000&minWithdrawable=40000&nonce=test_withdraw_msat&signature=07a0debb17fcf406c0882629fc9057ac73776bc63afe0a204bb4317e21016def&tag=withdrawRequest";
 	TEST_ASSERT_EQUAL_STRING(
 		expected.c_str(),
 		result.c_str()
@@ -163,16 +170,16 @@ void test_signer_create_url_withdraw_fiat(void) {
 	config.apiKey.key = "ef9901bebc801518e7d862c2edaedd3acd86ec132fb3bd5ac0013c9a5ba478db";
 	config.apiKey.encoding = "hex";
 	config.callbackUrl = "https://localhost:3000/lnurl";
-	config.fiatCurrency = "CZK";
+	config.fiatCurrency = "EUR";
 	config.shorten = false;
 	LnurlSigner signer(config);
 	const std::string nonce = "test_withdraw_fiat";
-	LnurlWithdrawParamsFiat params;
-	params.minWithdrawable = 50.00;
-	params.maxWithdrawable = 50.00;
+	LnurlWithdrawParamsMSat params;
+	params.minWithdrawable = 40;
+	params.maxWithdrawable = 40;
 	params.defaultDescription = "description: test_withdraw_fiat";
 	const std::string result = signer.create_url(params, nonce);
-	const std::string expected = "https://localhost:3000/lnurl?id=5d4aeb462a&tag=withdrawRequest&nonce=test_withdraw_fiat&fiatCurrency=CZK&minWithdrawable=50&maxWithdrawable=50&defaultDescription=description%3A%20test_withdraw_fiat&signature=99bdbe1f273732640b1c02f83f3bf54e7bba8bd95000c6782375006d0ea08d3a";
+	const std::string expected = "https://localhost:3000/lnurl?defaultDescription=description%3A%20test_withdraw_fiat&f=EUR&id=5d4aeb462a&maxWithdrawable=40&minWithdrawable=40&nonce=test_withdraw_fiat&signature=b5a385b4f7f8b7f1b14c550eb50175009959aaff3bc8e23d52743d9c416889eb&tag=withdrawRequest";
 	TEST_ASSERT_EQUAL_STRING(
 		expected.c_str(),
 		result.c_str()
@@ -185,6 +192,7 @@ void test_signer_create_url_withdraw_msat_shortened(void) {
 	config.apiKey.key = "ef9901bebc801518e7d862c2edaedd3acd86ec132fb3bd5ac0013c9a5ba478db";
 	config.apiKey.encoding = "hex";
 	config.callbackUrl = "https://localhost:3000/lnurl";
+	config.fiatCurrency = "";
 	config.shorten = true;
 	LnurlSigner signer(config);
 	const std::string nonce = "test_w_msat_s";
@@ -193,7 +201,7 @@ void test_signer_create_url_withdraw_msat_shortened(void) {
 	params.maxWithdrawable = 60000;
 	params.defaultDescription = "";
 	const std::string result = signer.create_url(params, nonce);
-	const std::string expected = "https://localhost:3000/lnurl?id=5d4aeb462a&t=w&n=test_w_msat_s&pn=50000&px=60000&pd=&s=6b07f932343090197a962a2dc6f9ba480ba30fd91554dc40259db0304d77a001";
+	const std::string expected = "https://localhost:3000/lnurl?id=5d4aeb462a&n=test_w_msat_s&pd=&pn=50000&px=60000&s=b6181679ca0d512905e0463b1008154c0f6d9c7aa464e996e101234b0a9fba0a&t=w";
 	TEST_ASSERT_EQUAL_STRING(
 		expected.c_str(),
 		result.c_str()
@@ -202,20 +210,20 @@ void test_signer_create_url_withdraw_msat_shortened(void) {
 
 void test_signer_create_url_withdraw_fiat_shortened(void) {
 	LnurlSignerConfig config;
-	config.apiKey.id = "5d4aeb462a";
-	config.apiKey.key = "ef9901bebc801518e7d862c2edaedd3acd86ec132fb3bd5ac0013c9a5ba478db";
+	config.apiKey.id = "2bd84343e7";
+	config.apiKey.key = "6e778c37ed08882a934ad1a038d4e967b8a31dc2dbee9dba91de2ab6ded357db";
 	config.apiKey.encoding = "hex";
-	config.callbackUrl = "https://localhost:3000/lnurl";
-	config.fiatCurrency = "CZK";
+	config.callbackUrl = "https://localhost:3000/u";
+	config.fiatCurrency = "EUR";
 	config.shorten = true;
 	LnurlSigner signer(config);
 	const std::string nonce = "test_w_fiat_s";
-	LnurlWithdrawParamsFiat params;
-	params.minWithdrawable = 50.00;
-	params.maxWithdrawable = 50.00;
+	LnurlWithdrawParamsMSat params;
+	params.minWithdrawable = 50;
+	params.maxWithdrawable = 50;
 	params.defaultDescription = "";
 	const std::string result = signer.create_url(params, nonce);
-	const std::string expected = "https://localhost:3000/lnurl?id=5d4aeb462a&t=w&n=test_w_fiat_s&f=CZK&pn=50&px=50&pd=&s=a96605f2e13c3211f0752b8c9870def55e0e854d57254ab0f8fae4975e85e1d3";
+	const std::string expected = "https://localhost:3000/u?f=EUR&id=2bd84343e7&n=test_w_fiat_s&pd=&pn=50&px=50&s=1874cd9be51df827f2fb20b254e83f31f3f99505cf551538987e0b4c29cb2261&t=w";
 	TEST_ASSERT_EQUAL_STRING(
 		expected.c_str(),
 		result.c_str()
@@ -228,6 +236,7 @@ void test_signer_create_url_base64_encoded_key(void) {
 	config.apiKey.key = "zc5UwZHCrug1GuOTIodVQKFii40gXEDbydClsqs/tIM=";
 	config.apiKey.encoding = "base64";
 	config.callbackUrl = "https://localhost:3000/lnurl";
+	config.fiatCurrency = "";
 	config.shorten = false;
 	LnurlSigner signer(config);
 	const std::string nonce = "test_base64_encoded_key";
@@ -236,7 +245,7 @@ void test_signer_create_url_base64_encoded_key(void) {
 	params.maxWithdrawable = 60000;
 	params.defaultDescription = "";
 	const std::string result = signer.create_url(params, nonce);
-	const std::string expected = "https://localhost:3000/lnurl?id=9Pfv1wY%3D&tag=withdrawRequest&nonce=test_base64_encoded_key&minWithdrawable=50000&maxWithdrawable=60000&defaultDescription=&signature=d4c92e08259b5fe9dd41f94433f0416d703f36e108d5eeb00dc075b2d255f5a5";
+	const std::string expected = "https://localhost:3000/lnurl?defaultDescription=&id=9Pfv1wY%3D&maxWithdrawable=60000&minWithdrawable=50000&nonce=test_base64_encoded_key&signature=b4cfc6a922055b6be83d226a2ea85f12f01de39102b9865bab877e08b06f0927&tag=withdrawRequest";
 	TEST_ASSERT_EQUAL_STRING(
 		expected.c_str(),
 		result.c_str()
@@ -249,6 +258,7 @@ void test_signer_create_url_unspecified_encoding(void) {
 	config.apiKey.key = "zc5UwZHCrug1GuOTIodVQKFii40gXEDbydClsqs/tIM=";
 	config.apiKey.encoding = "";
 	config.callbackUrl = "https://localhost:3000/lnurl";
+	config.fiatCurrency = "";
 	config.shorten = false;
 	LnurlSigner signer(config);
 	const std::string nonce = "test_base64_unspecified_encoding";
@@ -257,7 +267,7 @@ void test_signer_create_url_unspecified_encoding(void) {
 	params.maxWithdrawable = 60000;
 	params.defaultDescription = "";
 	const std::string result = signer.create_url(params, nonce);
-	const std::string expected = "https://localhost:3000/lnurl?id=9Pfv1wY%3D&tag=withdrawRequest&nonce=test_base64_unspecified_encoding&minWithdrawable=50000&maxWithdrawable=60000&defaultDescription=&signature=7ef98c9c2b874d4f4b58746bb105bc8eef9993f25332362f8fe87384b0b6cc26";
+	const std::string expected = "https://localhost:3000/lnurl?defaultDescription=&id=9Pfv1wY%3D&maxWithdrawable=60000&minWithdrawable=50000&nonce=test_base64_unspecified_encoding&signature=42de7ce7a83fd51ae6eaafc3c72265dc169e3636706946f680c059bb07d8f66b&tag=withdrawRequest";
 	TEST_ASSERT_EQUAL_STRING(
 		expected.c_str(),
 		result.c_str()

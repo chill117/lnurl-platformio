@@ -3,6 +3,7 @@
 Implementation of [lnurl](https://github.com/btcontract/lnurl-rfc) in C++ for [PlatformIO](https://platformio.org/).
 
 * [Overview](#overview)
+* [Requirements](#requirements)
 * [Installation](#installation)
 * [Usage](#usage)
 * [Tests](#tests)
@@ -21,6 +22,17 @@ Current state of lnurl subprotocol implementation:
 * [ ] lnurl-pay
 * [ ] lnurl-channel
 * [ ] lnurl-auth
+
+
+## Requirements
+
+If you only want to use the library in your own platformio project, then you only need the following:
+* [PlatformIO Core (CLI)](https://docs.platformio.org/en/latest/core/)
+
+The following are needed if you want to run this project's tests or to re-generate the test runner file(s):
+* [make](https://www.gnu.org/software/make/)
+* [nodejs](https://nodejs.org/)
+	* On Linux and Mac install node via [nvm](https://github.com/creationix/nvm)
 
 
 ## Installation
@@ -98,12 +110,19 @@ See the [test](https://github.com/chill117/lnurl-platformio/tree/master/test) or
 
 To run the automated tests:
 ```bash
-platformio test \
-	--environment esp32dev \
-	--upload-port /dev/ttyUSB0 \
-	--test-port /dev/ttyUSB0
+make test ENV=esp32dev DEVICE=/dev/ttyUSB0
 ```
-It is necessary to connect a hardware via USB.
+It is necessary to connect a hardware device via USB.
+
+
+### Generated Tests
+
+The tests relating to the LnurlSigner class are partially auto-generated using a script. The reasoning for this is to ensure compatibility with the [lnurl-node](https://github.com/chill117/lnurl-node) project.
+
+To re-generate the test runner file(s):
+```bash
+make generateTests
+```
 
 
 ## Changelog

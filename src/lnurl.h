@@ -23,6 +23,7 @@
 #include "util/strencodings.h"
 
 #include <iomanip>
+#include <map>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -33,6 +34,22 @@ namespace {
 		std::string minWithdrawable;
 		std::string maxWithdrawable;
 		std::string defaultDescription = "";
+	};
+
+	typedef std::map<std::string, std::string> LnurlQuery;
+
+	const std::map<std::string, std::string> shortenKeysLookupTable {
+		{ "id", "id" },
+		{ "nonce", "n" },
+		{ "signature", "s" },
+		{ "tag", "t" },
+		{ "minWithdrawable", "pn" },
+		{ "maxWithdrawable", "px" },
+		{ "defaultDescription", "pd" }
+	};
+
+	const std::map<std::string, std::string> shortenTagsLookupTable {
+		{ "withdrawRequest", "w" }
 	};
 }
 
@@ -148,44 +165,80 @@ class LnurlSigner {
 			return HexStr(signature);
 		}
 
-		std::string init_payload(const std::string &tag, const std::string &nonce = "") {
-			std::string payload = "";
-			if (nonce == "") {
-				throw std::invalid_argument("Missing required argument: \"nonce\"");
+		LnurlQuery shorten_query(const LnurlQuery &query) {
+			LnurlQuery shortenedQuery;
+			for (auto const &it : query) {
+				std::string key = it.first;
+				std::string value = it.second;
+				if (key == "tag") {
+					const auto shortTag = shortenTagsLookupTable.find(value);
+					if (shortTag != shortenTagsLookupTable.end()) {
+						value = shortTag->second;
+					}
+				}
+				const auto shortKey = shortenKeysLookupTable.find(key);
+				if (shortKey != shortenKeysLookupTable.end()) {
+					key = shortKey->second;
+				}
+				shortenedQuery[key] = value;
 			}
-			payload += "id=";
-			payload += url_encode(config.apiKey.id);
-			payload += (config.shorten ? "&t=" : "&tag=");
-			payload += url_encode(tag);
-			payload += (config.shorten ? "&n=" : "&nonce=");
-			payload += url_encode(nonce);
-			if (config.fiatCurrency != "") {
-				payload += (config.shorten ? "&f=" : "&fiatCurrency=");
-				payload += url_encode(config.fiatCurrency);
-			}
-			return payload;
+			return shortenedQuery;
 		}
 
-		void sign_payload(std::string &payload) {
+		std::string stringify_query(const LnurlQuery &query) {
+			std::string str = "";
+			// The default behavior of std::map is to sort alphabetically on the first element.
+			// In this case the first element is the query parameter's key.
+			// No extra sorting is required here.
+			for (auto const &it : query) {
+				std::string key = it.first;
+				std::string value = it.second;
+				str += "&";
+				str += url_encode(key);
+				str += "=";
+				str += url_encode(value);
+			}
+			// Erase the first delimiter.
+			if (str != "") {
+				str.erase(0, 1);
+			}
+			return str;
+		}
+
+		void sign_query(LnurlQuery &query) {
+			// The query object should be stringified in a standardized way.
+			// This is needed to ensure consistent signing between device and server.
+			const std::string payload = stringify_query(query);
 			const std::string signature = create_signature(payload);
-			payload += (config.shorten ? "&s=" : "&signature=");
-			payload += url_encode(signature);
+			query["signature"] = signature;
+		}
+
+		LnurlQuery init_query(const std::string &tag, const std::string &nonce) {
+			LnurlQuery query;
+			query["id"] = config.apiKey.id;
+			if (config.fiatCurrency != "") {
+				query["f"] = config.fiatCurrency;
+			}
+			query["tag"] = tag;
+			query["nonce"] = nonce;
+			return query;
 		}
 
 		std::string create_url(const LnurlWithdrawParams &params, const std::string &nonce = "") {
+			if (nonce == "") {
+				throw std::invalid_argument("Missing required argument: \"nonce\"");
+			}
 			std::string url = "";
 			url += config.callbackUrl;
-			const std::string tag = (config.shorten ? "w" : "withdrawRequest");
-			std::string payload = init_payload(tag, nonce);
-			payload += (config.shorten ? "&pn=" : "&minWithdrawable=");
-			payload += url_encode(params.minWithdrawable);
-			payload += (config.shorten ? "&px=" : "&maxWithdrawable=");
-			payload += url_encode(params.maxWithdrawable);
-			payload += (config.shorten ? "&pd=" : "&defaultDescription=");
-			payload += url_encode(params.defaultDescription);
-			sign_payload(payload);
-			url += "?";
-			url += payload;
+			LnurlQuery query = init_query("withdrawRequest", nonce);
+			query["minWithdrawable"] = params.minWithdrawable;
+			query["maxWithdrawable"] = params.maxWithdrawable;
+			query["defaultDescription"] = params.defaultDescription;
+			sign_query(query);
+			if (config.shorten) {
+				query = shorten_query(query);
+			}
+			url += "?" + stringify_query(query);
 			return url;
 		}
 

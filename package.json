@@ -1,0 +1,27 @@
+{
+  "name": "lnurl-platformio",
+  "version": "0.1.1",
+  "private": true,
+  "description": "Implementation of [lnurl](https://github.com/btcontract/lnurl-rfc) in C++ for [PlatformIO](https://platformio.org/).",
+  "main": null,
+  "scripts": {
+    "test": "echo \"Use `make test` to run tests\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chill117/lnurl-platformio.git"
+  },
+  "author": {
+    "name": "Charles Hill",
+    "email": "chill@degreesofzero.com"
+  },
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/chill117/lnurl-platformio/issues"
+  },
+  "homepage": "https://github.com/chill117/lnurl-platformio#readme",
+  "dependencies": {
+    "lnurl": "0.12.0",
+    "underscore": "1.12.0"
+  }
+}
