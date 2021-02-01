@@ -148,6 +148,26 @@ const tests = [
 			fiatCurrency: '',
 		},
 	},
+	{
+		name: 'create_url_unescaped_escaped_reserved_chars',
+		args: {
+			apiKey: {
+				id: '2bd84343e7',
+				key: '6e778c37ed08882a934ad1a038d4e967b8a31dc2dbee9dba91de2ab6ded357db',
+				encoding: 'hex',
+			},
+			callbackUrl: 'https://localhost:3000/lnurl',
+			shorten: false,
+			nonce: 'test_unescaped_escaped_reserved_chars',
+			tag: 'withdrawRequest',
+			params: {
+				minWithdrawable: 12,
+				maxWithdrawable: 12,
+				defaultDescription: 'abcABC0123 ESCAPED # UNESCAPED -_.!~*\'() RESERVED ;,/?:@&=+$',
+			},
+			fiatCurrency: 'EUR',
+		},
+	},
 ];
 
 const replacements = {

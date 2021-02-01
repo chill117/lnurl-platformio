@@ -101,18 +101,22 @@ class LnurlSigner {
 			config = t_config;
 		}
 
+		// Same functionality as JavaScript's encodeURIComponent.
+		// Keeps alphanumeric (and a few other) characters intact (NOT encoded). See:
+		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent#description
+		const std::string encodeUriComponentSafeChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.!~*'()";
 		std::string url_encode(const std::string &value) {
 			std::ostringstream escaped;
 			escaped.fill('0');
 			escaped << std::hex;
 			for (std::string::const_iterator i = value.begin(), n = value.end(); i != n; ++i) {
 				std::string::value_type c = (*i);
-				// Keep alphanumeric and other accepted characters intact
-				if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~') {
+				// Keep alphanumeric and other accepted characters intact.
+				if (encodeUriComponentSafeChars.find(c) != std::string::npos) {
 					escaped << c;
 					continue;
 				}
-				// Any other characters are percent-encoded
+				// Any other characters are percent-encoded.
 				escaped << std::uppercase;
 				escaped << '%' << std::setw(2) << int((unsigned char) c);
 				escaped << std::nouppercase;

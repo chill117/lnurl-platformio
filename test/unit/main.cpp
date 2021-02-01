@@ -274,6 +274,28 @@ void test_signer_create_url_unspecified_encoding(void) {
 	);
 }
 
+void test_signer_create_url_unescaped_escaped_reserved_chars(void) {
+	LnurlSignerConfig config;
+	config.apiKey.id = "2bd84343e7";
+	config.apiKey.key = "6e778c37ed08882a934ad1a038d4e967b8a31dc2dbee9dba91de2ab6ded357db";
+	config.apiKey.encoding = "hex";
+	config.callbackUrl = "https://localhost:3000/lnurl";
+	config.fiatCurrency = "EUR";
+	config.shorten = false;
+	LnurlSigner signer(config);
+	const std::string nonce = "test_unescaped_escaped_reserved_chars";
+	LnurlWithdrawParamsMSat params;
+	params.minWithdrawable = 12;
+	params.maxWithdrawable = 12;
+	params.defaultDescription = "abcABC0123 ESCAPED # UNESCAPED -_.!~*'() RESERVED ;,/?:@&=+$";
+	const std::string result = signer.create_url(params, nonce);
+	const std::string expected = "https://localhost:3000/lnurl?defaultDescription=abcABC0123%20ESCAPED%20%23%20UNESCAPED%20-_.!~*'()%20RESERVED%20%3B%2C%2F%3F%3A%40%26%3D%2B%24&f=EUR&id=2bd84343e7&maxWithdrawable=12&minWithdrawable=12&nonce=test_unescaped_escaped_reserved_chars&signature=9316d5af43eaf7dd614ed76ce97a0cde7b0fe8764229ed545cf8fb07f4668e8c&tag=withdrawRequest";
+	TEST_ASSERT_EQUAL_STRING(
+		expected.c_str(),
+		result.c_str()
+	);
+}
+
 int main(void) {
 	UNITY_BEGIN();
 	RUN_TEST(test_encode);
@@ -288,6 +310,7 @@ int main(void) {
 	RUN_TEST(test_signer_create_url_withdraw_fiat_shortened);
 	RUN_TEST(test_signer_create_url_base64_encoded_key);
 	RUN_TEST(test_signer_create_url_unspecified_encoding);
+	RUN_TEST(test_signer_create_url_unescaped_escaped_reserved_chars);
 	return UNITY_END();
 }
 
