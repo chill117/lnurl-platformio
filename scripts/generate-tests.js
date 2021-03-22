@@ -168,12 +168,36 @@ const tests = [
 			fiatCurrency: 'EUR',
 		},
 	},
+	{
+		name: 'create_url_withdraw_custom_params',
+		args: {
+			apiKey: {
+				id: '5d4aeb462a',
+				key: 'ef9901bebc801518e7d862c2edaedd3acd86ec132fb3bd5ac0013c9a5ba478db',
+				encoding: 'hex',
+			},
+			callbackUrl: 'https://localhost:3000/lnurl',
+			shorten: false,
+			nonce: 'test_withdraw_custom_params',
+			tag: 'withdrawRequest',
+			params: {
+				minWithdrawable: 50000,
+				maxWithdrawable: 50000,
+				defaultDescription: '',
+			},
+			customParams: {
+				custom1: 'custom param',
+				custom2: 'another custom param',
+			},
+			fiatCurrency: '',
+		},
+	},
 ];
 
 const replacements = {
 	SIGNER_TESTS: _.chain(tests).map(function(test) {
 		const { name } = test;
-		let { apiKey, callbackUrl, shorten, nonce, tag, params, fiatCurrency } = test.args;
+		let { apiKey, callbackUrl, shorten, nonce, tag, params, customParams, fiatCurrency } = test.args;
 		let options = {
 			baseUrl: callbackUrl,
 			encode: false,
@@ -185,8 +209,8 @@ const replacements = {
 		if (nonce) {
 			params.nonce = nonce;
 		}
-		const signedUrl = lnurl.createSignedUrl(apiKey, tag, params, options);
-		return `void test_signer_${name}(void) {
+		let SIGNER_TEST = '';
+		SIGNER_TEST += `void test_signer_${name}(void) {
 	LnurlSignerConfig config;
 	config.apiKey.id = "${apiKey.id}";
 	config.apiKey.key = "${apiKey.key}";
@@ -195,11 +219,27 @@ const replacements = {
 	config.fiatCurrency = "${fiatCurrency}";
 	config.shorten = ${shorten};
 	LnurlSigner signer(config);
-	const std::string nonce = "${nonce}";
-	LnurlWithdrawParamsMSat params;
+	const std::string nonce = "${nonce}";`;
+	if (fiatCurrency) {
+		SIGNER_TEST += `
+	LnurlWithdrawParamsFiat params;`;
+	} else {
+		SIGNER_TEST += `
+	LnurlWithdrawParamsMSat params;`;
+	}
+	SIGNER_TEST += `
 	params.minWithdrawable = ${params.minWithdrawable};
 	params.maxWithdrawable = ${params.maxWithdrawable};
-	params.defaultDescription = "${params.defaultDescription}";
+	params.defaultDescription = "${params.defaultDescription}";`;
+	if (customParams) {
+		params = _.defaults(params, customParams);
+		_.each(customParams, function(value, key) {
+			SIGNER_TEST += `
+	params.custom["${key}"] = "${value}";`;
+		});
+	}
+	const signedUrl = lnurl.createSignedUrl(apiKey, tag, params, options);
+	SIGNER_TEST += `
 	const std::string result = signer.create_url(params, nonce);
 	const std::string expected = "${signedUrl}";
 	TEST_ASSERT_EQUAL_STRING(
@@ -207,6 +247,7 @@ const replacements = {
 		result.c_str()
 	);
 }`;
+		return SIGNER_TEST;
 	}).value().join('\n\n'),
 	SIGNER_RUN_TESTS: _.chain(tests).pluck('name').map(function(name) {
 		return `\tRUN_TEST(test_signer_${name});`;

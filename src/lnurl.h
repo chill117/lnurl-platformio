@@ -31,6 +31,7 @@
 namespace {
 
 	struct LnurlWithdrawParams {
+		std::map<std::string, std::string> custom;
 		std::string minWithdrawable;
 		std::string maxWithdrawable;
 		std::string defaultDescription = "";
@@ -73,12 +74,14 @@ struct LnurlSignerConfig {
 };
 
 struct LnurlWithdrawParamsFiat {
+	std::map<std::string, std::string> custom;
 	double minWithdrawable;
 	double maxWithdrawable;
 	std::string defaultDescription = "";
 };
 
 struct LnurlWithdrawParamsMSat {
+	std::map<std::string, std::string> custom;
 	unsigned long long int minWithdrawable;
 	unsigned long long int maxWithdrawable;
 	std::string defaultDescription = "";
@@ -122,6 +125,17 @@ class LnurlSigner {
 				escaped << std::nouppercase;
 			}
 			return escaped.str();
+		}
+
+		bool is_reserved_param_key(const std::string &paramKey) {
+			for (auto const &it : shortenKeysLookupTable) {
+				std::string key = it.first;
+				std::string value = it.second;
+				if (paramKey == key || paramKey == value) {
+					return true;
+				}
+			}
+			return false;
 		}
 
 		std::string to_string(const double &number) {
@@ -238,6 +252,14 @@ class LnurlSigner {
 			query["minWithdrawable"] = params.minWithdrawable;
 			query["maxWithdrawable"] = params.maxWithdrawable;
 			query["defaultDescription"] = params.defaultDescription;
+			for (auto const &it : params.custom) {
+				std::string customKey = it.first;
+				std::string customValue = it.second;
+				if (is_reserved_param_key(customKey)) {
+					throw std::invalid_argument("Invalid custom parameter key (\"" + customKey + "\"): Reserved");
+				}
+				query[customKey] = customValue;
+			}
 			sign_query(query);
 			if (config.shorten) {
 				query = shorten_query(query);
@@ -259,6 +281,7 @@ class LnurlSigner {
 			params.minWithdrawable = to_string(t_params.minWithdrawable);
 			params.maxWithdrawable = to_string(t_params.maxWithdrawable);
 			params.defaultDescription = t_params.defaultDescription;
+			params.custom = t_params.custom;
 			return create_url(params, nonce);
 		}
 
@@ -273,6 +296,7 @@ class LnurlSigner {
 			params.minWithdrawable = to_string(t_params.minWithdrawable);
 			params.maxWithdrawable = to_string(t_params.maxWithdrawable);
 			params.defaultDescription = t_params.defaultDescription;
+			params.custom = t_params.custom;
 			return create_url(params, nonce);
 		}
 };

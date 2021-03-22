@@ -73,12 +73,13 @@ void test_signer_create_url_withdraw_fiat_minWithdrawable_lt_zero(void) {
 	config.fiatCurrency = "CZK";
 	config.shorten = false;
 	LnurlSigner signer(config);
+	const std::string nonce = "test";
 	LnurlWithdrawParamsFiat params;
 	params.minWithdrawable = -1;
 	params.maxWithdrawable = 10000;
 	params.defaultDescription = "";
 	try {
-		signer.create_url(params);
+		signer.create_url(params, nonce);
 	} catch (const std::invalid_argument& e) {
 		TEST_ASSERT_EQUAL_STRING(
 			"\"minWithdrawable\" must be greater than zero",
@@ -97,12 +98,13 @@ void test_signer_create_url_withdraw_msat_maxWithdrawable_lt_minWithdrawable(voi
 	config.callbackUrl = "https://localhost:3000/lnurl";
 	config.shorten = false;
 	LnurlSigner signer(config);
+	const std::string nonce = "test";
 	LnurlWithdrawParamsMSat params;
 	params.minWithdrawable = 80000;
 	params.maxWithdrawable = 70000;
 	params.defaultDescription = "";
 	try {
-		signer.create_url(params);
+		signer.create_url(params, nonce);
 	} catch (const std::invalid_argument& e) {
 		TEST_ASSERT_EQUAL_STRING(
 			"\"maxWithdrawable\" must be greater than or equal to \"minWithdrawable\"",
@@ -122,15 +124,41 @@ void test_signer_create_url_withdraw_fiat_maxWithdrawable_lt_minWithdrawable(voi
 	config.fiatCurrency = "CZK";
 	config.shorten = false;
 	LnurlSigner signer(config);
+	const std::string nonce = "test";
 	LnurlWithdrawParamsFiat params;
 	params.minWithdrawable = 75.00;
 	params.maxWithdrawable = 70.00;
 	params.defaultDescription = "";
 	try {
-		signer.create_url(params);
+		signer.create_url(params, nonce);
 	} catch (const std::invalid_argument& e) {
 		TEST_ASSERT_EQUAL_STRING(
 			"\"maxWithdrawable\" must be greater than or equal to \"minWithdrawable\"",
+			e.what()
+		);
+		return;
+	}
+	TEST_FAIL_MESSAGE("Expected exception to be thrown");
+}
+
+void test_signer_create_url_custom_params_reserved(void) {
+	LnurlSignerConfig config;
+	config.apiKey.id = "5d4aeb462a";
+	config.apiKey.key = "ef9901bebc801518e7d862c2edaedd3acd86ec132fb3bd5ac0013c9a5ba478db";
+	config.apiKey.encoding = "hex";
+	config.callbackUrl = "https://localhost:3000/lnurl";
+	LnurlSigner signer(config);
+	const std::string nonce = "test";
+	LnurlWithdrawParamsMSat params;
+	params.minWithdrawable = 50000;
+	params.maxWithdrawable = 50000;
+	params.defaultDescription = "";
+	params.custom["id"] = "cannot_use_reserved_keys";
+	try {
+		signer.create_url(params, nonce);
+	} catch (const std::invalid_argument& e) {
+		TEST_ASSERT_EQUAL_STRING(
+			"Invalid custom parameter key (\"id\"): Reserved",
 			e.what()
 		);
 		return;
@@ -148,6 +176,7 @@ int main(void) {
 	RUN_TEST(test_signer_create_url_withdraw_fiat_minWithdrawable_lt_zero);
 	RUN_TEST(test_signer_create_url_withdraw_msat_maxWithdrawable_lt_minWithdrawable);
 	RUN_TEST(test_signer_create_url_withdraw_fiat_maxWithdrawable_lt_minWithdrawable);
+	RUN_TEST(test_signer_create_url_custom_params_reserved);
 // {{SIGNER_RUN_TESTS}}
 	return UNITY_END();
 }
