@@ -1,5 +1,7 @@
 # Changelog
 
+* v0.2.0:
+	* Custom params can now be used with signer.create_url()
 * v0.1.3:
 	* Encode URI components in the same way as JavaScript's encodeURIComponent. This ensures that querystrings with special characters are encoded in the same way on the device as the lnurl-node server.
 * v0.1.2:
