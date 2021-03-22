@@ -17,6 +17,9 @@ void setup() {
 	params.minWithdrawable = 50.00;
 	params.maxWithdrawable = 50.00;
 	params.defaultDescription = "";
+	// Optionally add your own custom parameters:
+	// params.custom["custom1"] = "custom parameter";
+	// params.custom["custom2"] = "another custom parameter";
 	// Generate a nonce.
 	// (Pseudo-)randomly generated number and a timestamp should be sufficient.
 	const std::string nonce = "this_should_be_unique_for_each_signed_url";
