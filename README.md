@@ -75,21 +75,20 @@ Create signed (lnurl-withdraw) URL:
 #include <iostream> // for std::cout
 
 // Prepare the config structure.
-LnurlSignerConfig config;
+Lnurl::SignerConfig config;
 config.apiKey.id = "5d4aeb462a";
 config.apiKey.key = "ef9901bebc801518e7d862c2edaedd3acd86ec132fb3bd5ac0013c9a5ba478db";
 config.apiKey.encoding = "hex";
 config.callbackUrl = "https://localhost:3000/lnurl";
-config.fiatCurrency = "CZK";
 config.shorten = true;
 
 // Prepare an instance of the signer class.
-LnurlSigner signer(config);
+Lnurl::Signer signer(config);
 
 // Prepare lnurl-withdraw parameters.
-LnurlWithdrawParamsFiat params;
-params.minWithdrawable = 50.00;
-params.maxWithdrawable = 50.00;
+Lnurl::WithdrawParams params;
+params.minWithdrawable = "50000";
+params.maxWithdrawable = "50000";
 params.defaultDescription = "";
 
 // Optionally add your own custom parameters:
@@ -121,7 +120,7 @@ It is necessary to connect a hardware device via USB.
 
 ### Generated Tests
 
-The tests relating to the LnurlSigner class are partially auto-generated using a script. The reasoning for this is to ensure compatibility with the [lnurl-node](https://github.com/chill117/lnurl-node) project.
+The tests relating to the Lnurl::Signer class are partially auto-generated using a script. The reasoning for this is to ensure compatibility with the [lnurl-node](https://github.com/chill117/lnurl-node) project.
 
 To re-generate the test runner file(s):
 ```bash

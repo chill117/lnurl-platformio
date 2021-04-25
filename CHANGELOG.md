@@ -1,5 +1,10 @@
 # Changelog
 
+* v0.3.0:
+	* Refactoring and clean-up of global namespace
+	* Lnurl::encode/decode are unchanged
+	* BREAKING CHANGES:
+		* LnurlSigner and other related globals moved to Lnurl namespace. See latest README for changes to Lnurl::Signer usage.
 * v0.2.0:
 	* Custom params can now be used with signer.create_url()
 * v0.1.3:

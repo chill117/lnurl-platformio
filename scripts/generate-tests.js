@@ -29,7 +29,7 @@ const path = require('path');
 
 const tests = [
 	{
-		name: 'create_url_withdraw_msat',
+		name: 'create_url_withdraw',
 		args: {
 			apiKey: {
 				id: '5d4aeb462a',
@@ -38,38 +38,17 @@ const tests = [
 			},
 			callbackUrl: 'https://localhost:3000/lnurl',
 			shorten: false,
-			nonce: 'test_withdraw_msat',
+			nonce: 'test_withdraw',
 			tag: 'withdrawRequest',
 			params: {
 				minWithdrawable: 40000,
 				maxWithdrawable: 60000,
 				defaultDescription: '',
 			},
-			fiatCurrency: '',
 		},
 	},
 	{
-		name: 'create_url_withdraw_fiat',
-		args: {
-			apiKey: {
-				id: '5d4aeb462a',
-				key: 'ef9901bebc801518e7d862c2edaedd3acd86ec132fb3bd5ac0013c9a5ba478db',
-				encoding: 'hex',
-			},
-			callbackUrl: 'https://localhost:3000/lnurl',
-			shorten: false,
-			nonce: 'test_withdraw_fiat',
-			tag: 'withdrawRequest',
-			params: {
-				minWithdrawable: 40,
-				maxWithdrawable: 40,
-				defaultDescription: 'description: test_withdraw_fiat',
-			},
-			fiatCurrency: 'EUR',
-		},
-	},
-	{
-		name: 'create_url_withdraw_msat_shortened',
+		name: 'create_url_withdraw_shortened',
 		args: {
 			apiKey: {
 				id: '5d4aeb462a',
@@ -78,34 +57,13 @@ const tests = [
 			},
 			callbackUrl: 'https://localhost:3000/lnurl',
 			shorten: true,
-			nonce: 'test_w_msat_s',
+			nonce: 'test_w_s',
 			tag: 'withdrawRequest',
 			params: {
 				minWithdrawable: 50000,
 				maxWithdrawable: 60000,
 				defaultDescription: '',
 			},
-			fiatCurrency: '',
-		},
-	},
-	{
-		name: 'create_url_withdraw_fiat_shortened',
-		args: {
-			apiKey: {
-				id: '2bd84343e7',
-				key: '6e778c37ed08882a934ad1a038d4e967b8a31dc2dbee9dba91de2ab6ded357db',
-				encoding: 'hex',
-			},
-			callbackUrl: 'https://localhost:3000/u',
-			shorten: true,
-			nonce: 'test_w_fiat_s',
-			tag: 'withdrawRequest',
-			params: {
-				minWithdrawable: 50,
-				maxWithdrawable: 50,
-				defaultDescription: '',
-			},
-			fiatCurrency: 'EUR',
 		},
 	},
 	{
@@ -125,7 +83,6 @@ const tests = [
 				maxWithdrawable: 60000,
 				defaultDescription: '',
 			},
-			fiatCurrency: '',
 		},
 	},
 	{
@@ -145,7 +102,6 @@ const tests = [
 				maxWithdrawable: 60000,
 				defaultDescription: '',
 			},
-			fiatCurrency: '',
 		},
 	},
 	{
@@ -165,7 +121,6 @@ const tests = [
 				maxWithdrawable: 12,
 				defaultDescription: 'abcABC0123 ESCAPED # UNESCAPED -_.!~*\'() RESERVED ;,/?:@&=+$',
 			},
-			fiatCurrency: 'EUR',
 		},
 	},
 	{
@@ -189,7 +144,6 @@ const tests = [
 				custom1: 'custom param',
 				custom2: 'another custom param',
 			},
-			fiatCurrency: '',
 		},
 	},
 ];
@@ -197,39 +151,29 @@ const tests = [
 const replacements = {
 	SIGNER_TESTS: _.chain(tests).map(function(test) {
 		const { name } = test;
-		let { apiKey, callbackUrl, shorten, nonce, tag, params, customParams, fiatCurrency } = test.args;
+		let { apiKey, callbackUrl, shorten, nonce, tag, params, customParams } = test.args;
 		let options = {
 			baseUrl: callbackUrl,
 			encode: false,
 			shorten,
 		};
-		if (fiatCurrency) {
-			params.f = fiatCurrency;
-		}
 		if (nonce) {
 			params.nonce = nonce;
 		}
 		let SIGNER_TEST = '';
 		SIGNER_TEST += `void test_signer_${name}(void) {
-	LnurlSignerConfig config;
+	Lnurl::SignerConfig config;
 	config.apiKey.id = "${apiKey.id}";
 	config.apiKey.key = "${apiKey.key}";
 	config.apiKey.encoding = "${apiKey.encoding}";
 	config.callbackUrl = "${callbackUrl}";
-	config.fiatCurrency = "${fiatCurrency}";
 	config.shorten = ${shorten};
-	LnurlSigner signer(config);
+	Lnurl::Signer signer(config);
 	const std::string nonce = "${nonce}";`;
-	if (fiatCurrency) {
-		SIGNER_TEST += `
-	LnurlWithdrawParamsFiat params;`;
-	} else {
-		SIGNER_TEST += `
-	LnurlWithdrawParamsMSat params;`;
-	}
 	SIGNER_TEST += `
-	params.minWithdrawable = ${params.minWithdrawable};
-	params.maxWithdrawable = ${params.maxWithdrawable};
+	Lnurl::WithdrawParams params;
+	params.minWithdrawable = "${params.minWithdrawable}";
+	params.maxWithdrawable = "${params.maxWithdrawable}";
 	params.defaultDescription = "${params.defaultDescription}";`;
 	if (customParams) {
 		params = _.defaults(params, customParams);

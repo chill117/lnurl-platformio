@@ -3,19 +3,18 @@
 void setup() {
 	Serial.begin(9600);
 	// Prepare the config structure.
-	LnurlSignerConfig config;
+	Lnurl::SignerConfig config;
 	config.apiKey.id = "5d4aeb462a";
 	config.apiKey.key = "ef9901bebc801518e7d862c2edaedd3acd86ec132fb3bd5ac0013c9a5ba478db";
 	config.apiKey.encoding = "hex";
 	config.callbackUrl = "https://localhost:3000/lnurl";
-	config.fiatCurrency = "CZK";
 	config.shorten = true;
 	// Prepare an instance of the signer class.
-	LnurlSigner signer(config);
+	Lnurl::Signer signer(config);
 	// Prepare lnurl-withdraw parameters.
-	LnurlWithdrawParamsFiat params;
-	params.minWithdrawable = 50.00;
-	params.maxWithdrawable = 50.00;
+	Lnurl::WithdrawParams params;
+	params.minWithdrawable = "50.00";
+	params.maxWithdrawable = "50.00";
 	params.defaultDescription = "";
 	// Optionally add your own custom parameters:
 	// params.custom["custom1"] = "custom parameter";
