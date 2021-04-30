@@ -1,5 +1,7 @@
 # Changelog
 
+* v0.4.0:
+	* Lnurl::Signer::create_signature is now a public method
 * v0.3.0:
 	* Refactoring and clean-up of global namespace
 	* Lnurl::encode/decode are unchanged

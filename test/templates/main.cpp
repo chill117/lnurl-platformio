@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-// {{DO_NOT_MODIFY}}
+// {{WARNING_TEXT}}
 
 #include "lnurl.h"
 
@@ -37,6 +37,25 @@ void test_decode(void) {
 	TEST_ASSERT_EQUAL_STRING(
 		expected.c_str(),
 		Lnurl::decode(encoded).c_str()
+	);
+}
+
+void test_create_signature(void) {
+	Lnurl::SignerConfig config;
+	config.apiKey.id = "5d4aeb462a";
+	config.apiKey.key = "ef9901bebc801518e7d862c2edaedd3acd86ec132fb3bd5ac0013c9a5ba478db";
+	config.apiKey.encoding = "hex";
+	Lnurl::Signer signer(config);
+	Lnurl::WithdrawParams params;
+	params.minWithdrawable = "50000";
+	params.maxWithdrawable = "60000";
+	params.defaultDescription = "";
+	const std::string payload = "sign arbitrary data string";
+	const std::string result = signer.create_signature(payload);
+	const std::string expected = "3dbc16c2c5cd51797211316a5257ad151dafd05347da58da9ca2319a7a669277";
+	TEST_ASSERT_EQUAL_STRING(
+		expected.c_str(),
+		result.c_str()
 	);
 }
 
@@ -145,6 +164,7 @@ int main(void) {
 	UNITY_BEGIN();
 	RUN_TEST(test_encode);
 	RUN_TEST(test_decode);
+	RUN_TEST(test_create_signature);
 	RUN_TEST(test_signer_create_url_missing_nonce);
 	RUN_TEST(test_signer_create_url_withdraw_minWithdrawable_lt_zero);
 	RUN_TEST(test_signer_create_url_withdraw_maxWithdrawable_lt_minWithdrawable);

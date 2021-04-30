@@ -64,12 +64,12 @@ namespace Lnurl {
 			void set_config(Lnurl::SignerConfig t_config);
 			std::string url_encode(const std::string &value);
 			bool is_reserved_param_key(const std::string &paramKey);
-			std::string create_signature(const std::string &t_data);
 			Lnurl::Query shorten_query(const Lnurl::Query &query);
 			std::string stringify_query(const Lnurl::Query &query);
 			void sign_query(Lnurl::Query &query);
 		public:
 			Signer(Lnurl::SignerConfig t_config);
+			std::string create_signature(const std::string &t_data);
 			std::string create_url(const Lnurl::Query &t_query);
 			std::string create_url(const Lnurl::WithdrawParams &params, const std::string &nonce = "");
 	};

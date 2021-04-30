@@ -1,6 +1,6 @@
 {
   "name": "lnurl",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "lnurl library for platformio",
   "keywords": "lnurl, bitcoin, lightning network",
   "repository": {
