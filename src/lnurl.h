@@ -22,6 +22,7 @@
 #include "crypto/hmac_sha256.h"
 #include "util/strencodings.h"
 
+#include <cmath>
 #include <iomanip>
 #include <map>
 #include <sstream>
